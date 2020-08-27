@@ -3,11 +3,41 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
+import { ApolloProvider } from 'react-apollo';
+import { ApolloClient } from 'apollo-client';
+import { InMemoryCache } from 'apollo-cache-inmemory';
+
+import { ApolloLink } from 'apollo-link';
+import { HttpLink } from 'apollo-link-http';
+
+const httpLink = new HttpLink({
+  uri: operation =>
+    `/api/graphql?${operation && operation.operationName}`,
+});
+
+const link = ApolloLink.from([
+  httpLink,
+]);
+
+const client = new ApolloClient({
+  link,
+  connectToDevTools: true,
+  cache: new InMemoryCache({
+    dataIdFromObject(obj) {
+      const { id, __typename } = obj;
+      if (id) {
+        return id;
+      }
+      return null;
+    },
+  }),
+});
+window.client = client;
 
 ReactDOM.render(
-  <React.StrictMode>
+  <ApolloProvider client={client}>
     <App />
-  </React.StrictMode>,
+  </ApolloProvider>,
   document.getElementById('root')
 );
 

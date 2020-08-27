@@ -1,68 +1,25 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
-
-## Available Scripts
-
-In the project directory, you can run:
-
+## 运行项目:
+### `yarn`
 ### `yarn start`
+### `yarn server`
+---
 
-Runs the app in the development mode.<br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+#### 项目目的: 验证 Graphql 缓存能否命中相同 cache key 的子资源
+#### 条件: 不同组件查询相同的资源
+#### 结果
+- Parent 组件语句中, 资源 nginx 的 cache key `nginx@Server_app@Partition_compass-stack@Cluster` 作为根缓存挂在了 Graphql 缓存上
 
-The page will reload if you make edits.<br />
-You will also see any lint errors in the console.
+![avatar](./img/parent.png)
 
-### `yarn test`
 
-Launches the test runner in the interactive watch mode.<br />
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- Child2 组件查询相同 name 的语句, 请求相同的 nginx 资源, Child2 可以取到 Parent 的缓存
 
-### `yarn build`
+![avatar](./img/child2.png)
 
-Builds the app for production to the `build` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
 
-The build is minified and the filenames include the hashes.<br />
-Your app is ready to be deployed!
+- Child1 组件查询不同 name 的语句, 请求相同的 nginx 资源, Child1 取不到 Parent 的缓存
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+![avatar](./img/child1.png)
 
-### `yarn eject`
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
-
-### Analyzing the Bundle Size
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
-
-### Making a Progressive Web App
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
-
-### Advanced Configuration
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
-
-### Deployment
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `yarn build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+### 结论: Graphql 缓存默认是以查询语句 + 参数是否一致来判断是否命中缓存, 是以语句粒度来命中的, 不能以资源粒度命中
