@@ -12,7 +12,7 @@ query getClusterDetail($id: ID!){
       # id
       # name
       servers{
-        id
+        # id
         alias
         name
       }

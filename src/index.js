@@ -30,6 +30,15 @@ const client = new ApolloClient({
       }
       return null;
     },
+    cacheRedirects: {
+      Query: {
+        getServerDetail: (_, args, { getCacheKey }) => {
+          // debugger
+          // 资源必须返回 id 或 _id, 否则找不到缓存, getCacheKey 只会根据 id 和 _id 找缓存
+          return getCacheKey({ __typename: 'Server', id: args.id });
+        }
+      },
+    },
   }),
 });
 window.client = client;
