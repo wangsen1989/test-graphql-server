@@ -8,13 +8,10 @@ window.gql = gql;
 const getClusterDetail = gql`
 query getClusterDetail($id: ID!){
   getClusterDetail(id: $id){
-    id
     name
     partitions{
-      id
       name
       servers{
-        id
         alias
         name
       }

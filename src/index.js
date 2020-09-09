@@ -23,13 +23,13 @@ const client = new ApolloClient({
   link,
   connectToDevTools: true,
   cache: new InMemoryCache({
-    dataIdFromObject(obj) {
-      const { id, __typename } = obj;
-      if (id) {
-        return id;
-      }
-      return null;
-    },
+    // dataIdFromObject(obj) {
+    //   const { id, __typename } = obj;
+    //   if (id) {
+    //     return id;
+    //   }
+    //   return null;
+    // },
   }),
 });
 window.client = client;

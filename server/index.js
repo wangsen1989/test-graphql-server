@@ -24,18 +24,18 @@ const customCachKeys = {
 }
 const typeDefs = gql`
 type Cluster {
-  id: ID!
+  # id: ID!
   name: String!
   partitions: [Partition]
 }
 type Partition {
-  id: String
+  # id: String
   name: String!
   servers: [Server]
   volumes: [Volume]
 }
 type Server {
-  id: String
+  # id: String
   name: String!
   alias: String
 }
@@ -70,20 +70,17 @@ const resolvers = {
     },
     getClusterDetail: (parent, { id }) => {
       let cluster = clusters.find(c => c.id === id);
-      cluster = { ...cluster, id: `${id}@Cluster` }
       const partitions = [];
       allPartitions.forEach(p => {
         if (p.labels.cid === id) {
           let servers = allServers.filter(s => s.labels.partition === p.name);
-          servers = servers.map(s => ({ ...s, id: `${s.name}@Server_${p.name}@Partition_${id}@Cluster` }))
-          partitions.push({ ...p, id: `${p.name}@Partition_${id}@Cluster`, servers })
+          partitions.push({ ...p, servers })
         }
       });
       return { ...cluster, partitions };
     },
     getServerDetail: (parent, { cid, partition, name }) => {
-      let server = allServers.find(s => s.name === 'nginx');
-      return { ...server, id: `nginx@Server_app@Partition_compass-stack@Cluster` };
+      return allServers.find(s => s.name === 'nginx');
     },
   },
 
